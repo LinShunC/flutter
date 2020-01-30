@@ -1,4 +1,7 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:newapp/DialogBox.dart';
 
 
 import 'Authentication.dart';
@@ -35,7 +38,7 @@ class home extends StatefulWidget
    }
   class HomePageState extends State <home>
   {
-     
+     DialogBox dialogBox = new DialogBox();
      FormType formType = FormType.home;
    //List data;
    List data;
@@ -66,21 +69,48 @@ class home extends StatefulWidget
         formType = FormType.cart;
       });
     }
-    Future <String> addToCart(String id) async
+    Future <void> addToCart(String id,String price,String name,String imageurl) async
     {
       print("id is :"+id);
-   String json = '{"id": "$id"}';
+   String json = '{"id": "$id", "price": "$price", "name": "$name","url": "$imageurl"}';
      Map<String, String> headers = {"Content-type": "application/json"};
   var url = 'http://localhost:3001/api/userValidation/AddToCart';
 
 
   http.Response  response = await http.post(url, headers: headers, body:json);
-  //Map <String, dynamic> item = convert.jsonDecode(response.body);
-  //String getid = item["valid"];
-  //print(getid);
+  Map <String, dynamic> item = convert.jsonDecode(response.body);
+  bool state = item["valid"];
+  print(state);
+ if (state == false)
+{
+  print("error");
+}
+else{
+  dialogBox.information(context, "success :", "item add to cart successfully");
+
+}
+
+    }
+    Future <void> removeFromCart(String id) async
+    {
+      print("id is :"+id);
+   String json = '{"id": "$id"}';
+     Map<String, String> headers = {"Content-type": "application/json"};
+  var url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
 
 
-  //print("home page get : "+ getid);
+  http.Response  response = await http.post(url, headers: headers, body:json);
+  Map <String, dynamic> item = convert.jsonDecode(response.body);
+  bool state = item["valid"];
+  print(state);
+ if (state == false)
+{
+  print("error");
+}
+else{
+  dialogBox.information(context, "success :", "item remove successfully");
+
+}
 
     }
 
@@ -90,7 +120,7 @@ class home extends StatefulWidget
     super.initState();
     this.getJsonData();
   }
-  Future <String> getJsonData() async {
+  Future <void> getJsonData() async {
 
   var url = 'http://localhost:3001/api/userValidation/getInfo';
 
@@ -100,13 +130,11 @@ class home extends StatefulWidget
   setState(() {
     List user = convert.jsonDecode(response.body)['image'];
     data = user;
-   
-    
-
   });
   } else {
     print('Request failed with status: ${response.statusCode}.');
   }
+  
 }
   @override
   Widget build(BuildContext context) {
@@ -172,9 +200,10 @@ class home extends StatefulWidget
           new Container(
 
           );
-            if(data[index]["id"] == "2"){
+           return  _buildCartColumn(data[index]);
+            /*if(data[index]["id"] == "2"){
           return  _buildColumn(data[index]);}
-          else { return new Container();}
+          else { return new Container();}*/
       
         },
        
@@ -241,11 +270,50 @@ Widget _buildColumn(dynamic item) => Container
        child: new Text("Add to cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
-        onPressed:() => addToCart(item['id']),
+        onPressed:() => addToCart(item['id'],item['price'],item['name'],item['url']),
      ),
       
     ],
   ),
 );
+
+Widget _buildCartColumn(dynamic item) => Container
+(
+  
+  decoration: BoxDecoration
+  (
+    color: Colors.blue[50]
+  ),
+  margin: const EdgeInsets.all(8),
+  child: Column(
+    
+    children: <Widget>[
+
+      Image.network(
+          item['url'],
+          width: 300,
+           height: 220.0,
+          //MediaQuery.of(context).size.width,  width of the screen
+          fit: BoxFit.fill,
+         
+        ),
+   new ListTile(
+            title: new Center(child: new Text(item['name']+" - "+item['price'],
+              style: new TextStyle(
+                  fontWeight: FontWeight.w500, fontSize: 25.0),)),
+            subtitle: new Text(item['id']),
+          ),
+      
+      new RaisedButton(  
+       child: new Text("Remove from cart",style:  new TextStyle(fontSize: 20.0),),
+       textColor: Colors.white,
+       color: Colors.lightBlue,
+        onPressed:() => removeFromCart(item['id']),
+     ),
+      
+    ],
+  ),
+);
+
   }
   
