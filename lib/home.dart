@@ -42,6 +42,7 @@ class home extends StatefulWidget
      FormType formType = FormType.home;
    //List data;
    List data;
+   Map <String, dynamic> cartData;
     void logout() async
     {
       try{
@@ -59,7 +60,10 @@ class home extends StatefulWidget
      
       setState(() {
         formType = FormType.home;
-     
+     this.getCartJsonData();
+   this.getJsonData();
+   print(data);
+   print(cartData);
       });
     }
      void moveToCart(){
@@ -67,6 +71,10 @@ class home extends StatefulWidget
    
       setState(() {
         formType = FormType.cart;
+        this.getCartJsonData();
+   this.getJsonData();
+    print(data);
+   print(cartData);
       });
     }
     Future <void> addToCart(String id,String price,String name,String imageurl) async
@@ -111,6 +119,11 @@ else{
   dialogBox.information(context, "success :", "item remove successfully");
 
 }
+setState(() {
+  this.getCartJsonData();
+   this.getJsonData();
+});
+
 
     }
 
@@ -119,6 +132,7 @@ else{
    
     super.initState();
     this.getJsonData();
+    this.getCartJsonData();
   }
   Future <void> getJsonData() async {
 
@@ -131,6 +145,28 @@ else{
     List user = convert.jsonDecode(response.body)['image'];
     data = user;
   });
+  } else {
+    print('Request failed with status: ${response.statusCode}.');
+  }
+  
+}
+ Future <void> getCartJsonData() async {
+
+  var url = 'http://localhost:3001/api/userValidation/getCartInfo';
+
+  var response = await http.get(url);
+
+  if (response.statusCode == 200) {
+
+
+ setState(() {
+    Map <String, dynamic> item = convert.jsonDecode(response.body)['snapshot'];
+    cartData = item;
+    print(cartData['1']['url']);
+    print("leanjadfhl");
+    print(cartData.length);
+  });
+ 
   } else {
     print('Request failed with status: ${response.statusCode}.');
   }
@@ -194,15 +230,18 @@ else{
         title:  new Text("Cart"),
       ),
       body: new ListView.builder(
-         itemCount: data == null ? 0: data.length,
+         itemCount: cartData == null ? 0: cartData.length,
         itemBuilder: (BuildContext context,index)
         {
           new Container(
 
           );
-           return  _buildCartColumn(data[index]);
-            /*if(data[index]["id"] == "2"){
-          return  _buildColumn(data[index]);}
+          print("container");
+          print(cartData);
+              return  _buildCartColumn(cartData[index]);
+           /* if(cartData[index] != null)
+            {
+          return  _buildCartColumn(cartData[index]);}
           else { return new Container();}*/
       
         },
@@ -277,9 +316,8 @@ Widget _buildColumn(dynamic item) => Container
   ),
 );
 
-Widget _buildCartColumn(dynamic item) => Container
+Widget _buildCartColumn(dynamic cartitem) => Container
 (
-  
   decoration: BoxDecoration
   (
     color: Colors.blue[50]
@@ -290,7 +328,8 @@ Widget _buildCartColumn(dynamic item) => Container
     children: <Widget>[
 
       Image.network(
-          item['url'],
+      
+          cartitem['url'],
           width: 300,
            height: 220.0,
           //MediaQuery.of(context).size.width,  width of the screen
@@ -298,17 +337,17 @@ Widget _buildCartColumn(dynamic item) => Container
          
         ),
    new ListTile(
-            title: new Center(child: new Text(item['name']+" - "+item['price'],
+            title: new Center(child: new Text(cartitem['name']+" - "+cartitem['price'],
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 25.0),)),
-            subtitle: new Text(item['id']),
+            subtitle: new Text(cartitem['id']),
           ),
       
       new RaisedButton(  
        child: new Text("Remove from cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
-        onPressed:() => removeFromCart(item['id']),
+        onPressed:() => removeFromCart(cartitem['id']),
      ),
       
     ],
