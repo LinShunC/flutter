@@ -33,7 +33,7 @@ if (state == false)
   print("error");
 }
 else{
-print('Howdy, ${user['valid']}!');
+
 }
 return UID;
 
@@ -56,7 +56,7 @@ if (state == false)
   print("error");
 }
 else{
-print('Howdy, ${user['valid']}!');
+
 }
 return UID;
 }
@@ -100,7 +100,7 @@ if (state == false)
   print("error");
 }
 else{
-print('Howdy, ${user['userid']}!');
+
 }
 return userID;
 

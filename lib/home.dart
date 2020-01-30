@@ -40,6 +40,10 @@ class home extends StatefulWidget
   {
      DialogBox dialogBox = new DialogBox();
      FormType formType = FormType.home;
+       String carturl;
+  String cartname;
+  String cartprice;
+  String cartid;
    //List data;
    List data;
    Map <String, dynamic> cartData;
@@ -110,6 +114,7 @@ else{
   http.Response  response = await http.post(url, headers: headers, body:json);
   Map <String, dynamic> item = convert.jsonDecode(response.body);
   bool state = item["valid"];
+
   print(state);
  if (state == false)
 {
@@ -117,6 +122,11 @@ else{
 }
 else{
   dialogBox.information(context, "success :", "item remove successfully");
+   cartData = null;
+    carturl = null;
+    cartname = null;
+     cartprice = null;
+        cartid = null;
 
 }
 setState(() {
@@ -160,15 +170,21 @@ setState(() {
 
 
  setState(() {
-    Map <String, dynamic> item = convert.jsonDecode(response.body)['snapshot'];
+    Map <String, dynamic> item = convert.jsonDecode(response.body)['childData'];//['snapshot'];
     cartData = item;
-    print(cartData['1']['url']);
-    print("leanjadfhl");
-    print(cartData.length);
+    print("cartData");
+    print(cartData);
+    carturl=cartData['url'];
+    cartname = cartData['name'];
+    cartid=cartData['id'];
+    cartprice = cartData['price'];
+    
+    
   });
  
   } else {
     print('Request failed with status: ${response.statusCode}.');
+   
   }
   
 }
@@ -230,7 +246,8 @@ setState(() {
         title:  new Text("Cart"),
       ),
       body: new ListView.builder(
-         itemCount: cartData == null ? 0: cartData.length,
+        // itemCount: cartData == null ? 0: cartData.length,
+         itemCount: cartData == null ? 0:1,
         itemBuilder: (BuildContext context,index)
         {
           new Container(
@@ -329,7 +346,7 @@ Widget _buildCartColumn(dynamic cartitem) => Container
 
       Image.network(
       
-          cartitem['url'],
+         carturl,
           width: 300,
            height: 220.0,
           //MediaQuery.of(context).size.width,  width of the screen
@@ -337,17 +354,17 @@ Widget _buildCartColumn(dynamic cartitem) => Container
          
         ),
    new ListTile(
-            title: new Center(child: new Text(cartitem['name']+" - "+cartitem['price'],
+            title: new Center(child: new Text(cartname+" - "+cartprice,
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 25.0),)),
-            subtitle: new Text(cartitem['id']),
+            subtitle: new Text(cartid),
           ),
       
       new RaisedButton(  
        child: new Text("Remove from cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
-        onPressed:() => removeFromCart(cartitem['id']),
+        onPressed:() => removeFromCart(cartid),
      ),
       
     ],
