@@ -155,17 +155,23 @@ centerTitle: true,
            return securityCode = value;
          },
                ),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
                new SizedBox(
                  width: 240.0,
   height: 50.0,
              child:  new RaisedButton(  
+                shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+           // side: BorderSide(color: Colors.red)
+            ),
        child: new Text("Submit",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
         onPressed: validateAndSubmit,
-     ),),
-
+     ),
+     
+     ),
+    
              ],
            ),
 

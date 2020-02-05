@@ -68,8 +68,7 @@ class home extends StatefulWidget
         formType = FormType.home;
      this.getCartJsonData();
    this.getJsonData();
-   print(data);
-   print(cartData);
+  
       });
     }
      void moveToCart(){
@@ -79,13 +78,12 @@ class home extends StatefulWidget
         formType = FormType.cart;
         this.getCartJsonData();
    this.getJsonData();
-    print(data);
-   print(cartData);
+   
       });
     }
     Future <void> addToCart(String id,String price,String name,String imageurl) async
     {
-      print("id is :"+id);
+      
    String json = '{"id": "$id", "price": "$price", "name": "$name","url": "$imageurl"}';
      Map<String, String> headers = {"Content-type": "application/json"};
   var url = 'http://localhost:3001/api/userValidation/AddToCart';
@@ -94,7 +92,7 @@ class home extends StatefulWidget
   http.Response  response = await http.post(url, headers: headers, body:json);
   Map <String, dynamic> item = convert.jsonDecode(response.body);
   bool state = item["valid"];
-  print(state);
+
  if (state == false)
 {
   print("error");
@@ -107,7 +105,7 @@ else{
     }
     Future <void> removeFromCart(String id) async
     {
-      print("id is :"+id);
+     
    String json = '{"id": "$id"}';
      Map<String, String> headers = {"Content-type": "application/json"};
   var url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
@@ -117,18 +115,14 @@ else{
   Map <String, dynamic> item = convert.jsonDecode(response.body);
   bool state = item["valid"];
 
-  print(state);
+  
  if (state == false)
 {
   print("error");
 }
 else{
   dialogBox.information(context, "success :", "item remove successfully");
-   cartData = null;
-    carturl = null;
-    cartname = null;
-     cartprice = null;
-        cartid = null;
+
 
 }
 setState(() {
@@ -175,7 +169,7 @@ setState(() {
     List item = convert.jsonDecode(response.body)['arrry'];//['snapshot'];
     cartData = item;
 
-    print(cartData);
+   
   
     
     
@@ -252,8 +246,7 @@ setState(() {
           new Container(
 
           );
-          print("container");
-          print(cartData);
+       
               return  _buildCartColumn(cartData[index]);
            /* if(cartData[index] != null)
             {
@@ -322,6 +315,8 @@ Widget _buildColumn(dynamic item) => Container
           ),
       
       new RaisedButton(  
+         shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),),
        child: new Text("Add to cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
@@ -358,23 +353,31 @@ Widget _buildCartColumn(dynamic cartitem) => Container
                   fontWeight: FontWeight.w500, fontSize: 25.0),)),
             //subtitle: new Text(cartitem['id']),
           ),
-      
+         new Row(
+           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+           children:<Widget>[
       new RaisedButton(  
+             shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),),
        child: new Text("Remove from cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
         onPressed:() => removeFromCart(cartitem['id']),
      ),
      new RaisedButton(  
+        shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),),
        child: new Text("Pay",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
        onPressed: ()
        {
-      widget.onPay();}
+      widget.onPay();
+      }
         //onPressed:() => removeFromCart(cartitem['id']),
      ),
-      
+           ]
+         ),
     ],
   ),
 );
