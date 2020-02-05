@@ -33,9 +33,9 @@ if (state == false)
   print("error");
 }
 else{
-
-}
 return UID;
+}
+
 
 }
 Future <bool>  signUp(String email, String password)async {
@@ -77,7 +77,7 @@ if (state == false)
   return false;
 }
 else{
-print('Howdy, true!');
+
 return true;
 }
 

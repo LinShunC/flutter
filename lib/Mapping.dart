@@ -73,7 +73,7 @@ class MappingPageState extends State <Mapping>
        onSignedIn: signedIn,
      );
      case AuthStatus.signedIn:
-    return new home(
+    return new Home(
        auth: widget.auth,
        onSignedOut: signOut,
        onPay:toPay,

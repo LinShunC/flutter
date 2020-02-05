@@ -5,7 +5,7 @@ import 'package:newapp/DialogBox.dart';
 
 
 import 'Authentication.dart';
-import 'pay.dart';
+
 import "package:http/http.dart" as http;
 import 'dart:async';
 import 'dart:convert' as convert;
@@ -13,9 +13,9 @@ import 'dart:convert' as convert;
 
 
 
-class home extends StatefulWidget
+class Home extends StatefulWidget
 {
-  home({
+  Home({
     this.auth,
     this.onSignedOut, 
     this.onPay,
@@ -38,7 +38,7 @@ class home extends StatefulWidget
      home,
      cart
    }
-  class HomePageState extends State <home>
+  class HomePageState extends State <Home>
   {
      DialogBox dialogBox = new DialogBox();
      FormType formType = FormType.home;
@@ -122,8 +122,6 @@ else{
 }
 else{
   dialogBox.information(context, "success :", "item remove successfully");
-
-
 }
 setState(() {
   this.getCartJsonData();
@@ -131,6 +129,27 @@ setState(() {
 });
 
 
+    }
+     Future <void> payForItem(String id) async
+    {
+     
+   String json = '{"id": "$id"}';
+     Map<String, String> headers = {"Content-type": "application/json"};
+  var url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
+
+
+  http.Response  response = await http.post(url, headers: headers, body:json);
+  Map <String, dynamic> item = convert.jsonDecode(response.body);
+  bool state = item["valid"];
+
+  
+ if (state == false)
+{
+  print("error");
+}
+else{
+  //dialogBox.information(context, "success :", "item remove successfully");
+}
     }
 
  @override
@@ -372,6 +391,7 @@ Widget _buildCartColumn(dynamic cartitem) => Container
        color: Colors.lightBlue,
        onPressed: ()
        {
+         payForItem(cartitem['id']);
       widget.onPay();
       }
         //onPressed:() => removeFromCart(cartitem['id']),

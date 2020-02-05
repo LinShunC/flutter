@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:newapp/home.dart';
-import 'home.dart';
+import 'DialogBox.dart';
 import 'Authentication.dart';
+import 'dart:convert' as convert;
+import "package:http/http.dart" as http;
 
 
 
@@ -21,6 +22,7 @@ class PayPage extends StatefulWidget
 
 class _PayPageState extends State <PayPage>
 {
+   DialogBox dialogBox = new DialogBox();
   final formKey = new  GlobalKey<FormState>();
   String name;
   String cardNumber;
@@ -40,39 +42,72 @@ class _PayPageState extends State <PayPage>
   }
 
 }
+ Future <bool> paymentRecord() async
+    {
+     
+  
+     Map<String, String> headers = {"Content-type": "application/json"};
+  var url = 'http://localhost:3001/api/userValidation/PaymentRecord';
+  String json = '{"name":"$name"  , "cardNumber": "$cardNumber", "expirationData": "$expirationData", "securityCode": "$securityCode"}';
 
+
+  http.Response  response = await http.post(url, headers: headers, body:json);
+  Map <String, dynamic> item = convert.jsonDecode(response.body);
+  bool state = item["valid"];
+
+  
+ if (state == false)
+{
+  print("error");
+  return false;
+}
+else{
+  dialogBox.information(context, "success :", "Payment successfully");
+  return true;
+}
+
+
+
+    }
 void validateAndSubmit() async
 {
 if (validateAndSave())
 {
-  
-print(name+cardNumber+expirationData+securityCode);
+
+ if(await paymentRecord() )
+ {
 widget.onSignedIn();
+ }
+ else
+ {
+   dialogBox.information(context, "error :", "Payment Failed");
+ }
+
 }
 else{
+  dialogBox.information(context, "error :", "Please check your input");
 
 }
 }
-void goToHomePage()
-{
-  Navigator.push(context, 
-         MaterialPageRoute(builder: (context)
-         {
-           return new home();
-         })
-         
-         );
 
-}
   @override
   Widget build(BuildContext context) {
+
   
     return new Scaffold(
       appBar: new AppBar(
-title: new Text("Payment"),
+        leading: new IconButton(
+               icon: new Icon(Icons.arrow_back, color: Colors.white),
+               onPressed: (){
+                 widget.onSignedIn();
+               },
+              ), 
+            title: new Text("Payment"),
 centerTitle: true,
+            ),
 
-      ),
+
+      
       body: 
         Container(
            margin: const EdgeInsets.all(8),
