@@ -6,7 +6,7 @@ import "package:http/http.dart" as http;
 abstract class AuthImplementation
 {
 Future <String>  signIn(String email, String password);
-Future <String>  signUp(String email, String password);
+Future <bool>  signUp(String email, String password);
 Future <bool>  signOut();
 Future <String>  getCurrentUser();
 }
@@ -38,7 +38,7 @@ else{
 return UID;
 
 }
-Future <String>  signUp(String email, String password)async {
+Future <bool>  signUp(String email, String password)async {
   //http.Response reponse = await http.post("http://localhost:3001/api/userValidation/validate");
 String url = 'http://localhost:3001/api/userValidation/signup';
   Map<String, String> headers = {"Content-type": "application/json"};
@@ -48,9 +48,8 @@ String url = 'http://localhost:3001/api/userValidation/signup';
   http.Response response = await http.post(url, headers: headers, body: json2);
 Map <String, dynamic> user = jsonDecode(response.body);
 bool state = user['valid'];
-String UID = user['userid'];
-print(UID);
-print(state);
+
+
 if (state == false)
 {
   print("error");
@@ -58,7 +57,7 @@ if (state == false)
 else{
 
 }
-return UID;
+return state;
 }
 
 Future <bool>  signOut()async {

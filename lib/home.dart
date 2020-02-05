@@ -5,7 +5,7 @@ import 'package:newapp/DialogBox.dart';
 
 
 import 'Authentication.dart';
-
+import 'pay.dart';
 import "package:http/http.dart" as http;
 import 'dart:async';
 import 'dart:convert' as convert;
@@ -17,10 +17,12 @@ class home extends StatefulWidget
 {
   home({
     this.auth,
-    this.onSignedOut,
+    this.onSignedOut, 
+    this.onPay,
   
   });
    final AuthImplementation auth ;
+   final VoidCallback onPay;
  
   final VoidCallback onSignedOut;
   @override
@@ -46,7 +48,7 @@ class home extends StatefulWidget
   String cartid;
    //List data;
    List data;
-   Map <String, dynamic> cartData;
+   List cartData;
     void logout() async
     {
       try{
@@ -170,14 +172,11 @@ setState(() {
 
 
  setState(() {
-    Map <String, dynamic> item = convert.jsonDecode(response.body)['childData'];//['snapshot'];
+    List item = convert.jsonDecode(response.body)['arrry'];//['snapshot'];
     cartData = item;
-    print("cartData");
+
     print(cartData);
-    carturl=cartData['url'];
-    cartname = cartData['name'];
-    cartid=cartData['id'];
-    cartprice = cartData['price'];
+  
     
     
   });
@@ -247,7 +246,7 @@ setState(() {
       ),
       body: new ListView.builder(
         // itemCount: cartData == null ? 0: cartData.length,
-         itemCount: cartData == null ? 0:1,
+         itemCount: cartData == null ? 0:cartData.length,
         itemBuilder: (BuildContext context,index)
         {
           new Container(
@@ -319,7 +318,7 @@ Widget _buildColumn(dynamic item) => Container
             title: new Center(child: new Text(item['name']+" - "+item['price'],
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 25.0),)),
-            subtitle: new Text(item['id']),
+         
           ),
       
       new RaisedButton(  
@@ -328,7 +327,7 @@ Widget _buildColumn(dynamic item) => Container
        color: Colors.lightBlue,
         onPressed:() => addToCart(item['id'],item['price'],item['name'],item['url']),
      ),
-      
+     
     ],
   ),
 );
@@ -346,7 +345,7 @@ Widget _buildCartColumn(dynamic cartitem) => Container
 
       Image.network(
       
-         carturl,
+        cartitem['url'],
           width: 300,
            height: 220.0,
           //MediaQuery.of(context).size.width,  width of the screen
@@ -354,17 +353,26 @@ Widget _buildCartColumn(dynamic cartitem) => Container
          
         ),
    new ListTile(
-            title: new Center(child: new Text(cartname+" - "+cartprice,
+            title: new Center(child: new Text(cartitem['name']+" - "+cartitem['price'],
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 25.0),)),
-            subtitle: new Text(cartid),
+            //subtitle: new Text(cartitem['id']),
           ),
       
       new RaisedButton(  
        child: new Text("Remove from cart",style:  new TextStyle(fontSize: 20.0),),
        textColor: Colors.white,
        color: Colors.lightBlue,
-        onPressed:() => removeFromCart(cartid),
+        onPressed:() => removeFromCart(cartitem['id']),
+     ),
+     new RaisedButton(  
+       child: new Text("Pay",style:  new TextStyle(fontSize: 20.0),),
+       textColor: Colors.white,
+       color: Colors.lightBlue,
+       onPressed: ()
+       {
+      widget.onPay();}
+        //onPressed:() => removeFromCart(cartitem['id']),
      ),
       
     ],

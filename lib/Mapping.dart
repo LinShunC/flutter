@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newapp/pay.dart';
 import "LoginRegister.dart";
 import 'home.dart';
 import 'Authentication.dart';
@@ -23,7 +24,8 @@ State <StatefulWidget> createState()
 enum AuthStatus
 {
   signedIn,
-  notSignedIn
+  notSignedIn,
+  pay
 }
 class MappingPageState extends State <Mapping>
 
@@ -54,6 +56,12 @@ class MappingPageState extends State <Mapping>
       authStatus = AuthStatus.notSignedIn;
     });
   }
+  void toPay()
+  {
+    setState(() {
+      authStatus = AuthStatus.pay;
+    });
+  }
   @override
   Widget build(BuildContext context) {
    
@@ -68,7 +76,13 @@ class MappingPageState extends State <Mapping>
     return new home(
        auth: widget.auth,
        onSignedOut: signOut,
+       onPay:toPay,
      );
+       break;
+     case AuthStatus.pay:
+       return new PayPage(
+         onSignedIn: signedIn,
+       );
        break;
    }
     return null;

@@ -63,15 +63,27 @@ if (validateAndSave())
 if (formType == FormType.login)
 {
   String userID = await widget.auth.signIn(email, password);
+  if (userID!=null){
+widget.onSignedIn();
+  }
+  else
+  {
+      dialogBox.information(context, "Error :", "please check your email and password");
+  }
 
-  // dialogBox.information(context, "Congraduations", "Sign in successfully.");
 }
 else{
- String userID = await widget.auth.signUp(email, password);
-    //dialogBox.information(context, "Congraduations", "Account created successfully.");
+ bool state = await widget.auth.signUp(email, password);
+ if (state == true){
+widget.onSignedIn();
+  }
+  else
+  {
+      dialogBox.information(context, "Error :", "please check your email and password");
+  }
 
 }
-widget.onSignedIn();
+
   }catch(e)
   {
     dialogBox.information(context, "Error :", e.toString());
@@ -80,30 +92,7 @@ widget.onSignedIn();
 }
 }
 
- /* Future<Response> validateAndSave(String email, String password) async {
-    final url = new Uri.https('baseUrl', '/users/authenticate');
-    final credentials = '$email:$password';
-    final basic = 'Basic ${base64Encode(utf8.encode(credentials))}';
-    final json = await NetworkUtils.post(url, headers: {
-      HttpHeaders.AUTHORIZATION: basic,
-    });
-    return Response.fromJson(json);
-  }*/
-   /*validateAndSave() async
-  {
-    final form = formKey.currentState;
-    if (form.validate())
-    {
-
-    
-      form.save();
-      return true;
-    }
-    else
-    {
-      return false ;
-    }
-  }*/
+ 
     void moveToRegister(){
 
       formKey.currentState.reset();
