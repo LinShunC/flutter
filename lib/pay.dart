@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'DialogBox.dart';
 import 'Authentication.dart';
+import 'dart:async';
+
+import 'dart:io';
 import 'dart:convert' as convert;
 import "package:http/http.dart" as http;
 
@@ -47,7 +50,19 @@ class _PayPageState extends State <PayPage>
      
   
      Map<String, String> headers = {"Content-type": "application/json"};
-  var url = 'http://localhost:3001/api/userValidation/PaymentRecord';
+     String url ;
+      if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/PaymentRecord';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/PaymentRecord';
+
+}
+
+  
   String json = '{"name":"$name"  , "cardNumber": "$cardNumber", "expirationData": "$expirationData", "securityCode": "$securityCode"}';
 
 

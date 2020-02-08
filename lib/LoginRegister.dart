@@ -1,11 +1,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
+
 import 'DialogBox.dart';
-import "package:http/http.dart" as http;
+
 import 'Authentication.dart';
 
 class LoginRegiser extends StatefulWidget 

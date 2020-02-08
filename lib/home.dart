@@ -5,7 +5,7 @@ import 'package:newapp/DialogBox.dart';
 
 
 import 'Authentication.dart';
-
+import 'dart:io';
 import "package:http/http.dart" as http;
 import 'dart:async';
 import 'dart:convert' as convert;
@@ -86,8 +86,17 @@ class Home extends StatefulWidget
       
    String json = '{"id": "$id", "price": "$price", "name": "$name","url": "$imageurl"}';
      Map<String, String> headers = {"Content-type": "application/json"};
-  var url = 'http://localhost:3001/api/userValidation/AddToCart';
+  String url ;
+  if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/AddToCart';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/AddToCart';
 
+}
 
   http.Response  response = await http.post(url, headers: headers, body:json);
   Map <String, dynamic> item = convert.jsonDecode(response.body);
@@ -108,8 +117,18 @@ else{
      
    String json = '{"id": "$id"}';
      Map<String, String> headers = {"Content-type": "application/json"};
-  var url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
+  
+  String url ;
+  if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/RemoveFromCart';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
 
+}
 
   http.Response  response = await http.post(url, headers: headers, body:json);
   Map <String, dynamic> item = convert.jsonDecode(response.body);
@@ -135,7 +154,18 @@ setState(() {
      
    String json = '{"id": "$id"}';
      Map<String, String> headers = {"Content-type": "application/json"};
-  var url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
+     String url ;
+  if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/RemoveFromCart';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/RemoveFromCart';
+
+}
+  
 
 
   http.Response  response = await http.post(url, headers: headers, body:json);
@@ -161,7 +191,18 @@ else{
   }
   Future <void> getJsonData() async {
 
-  var url = 'http://localhost:3001/api/userValidation/getInfo';
+
+   String url ;
+  if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/getInfo';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/getInfo';
+
+}
 
   var response = await http.get(url);
   if (response.statusCode == 200) {
@@ -177,7 +218,18 @@ else{
 }
  Future <void> getCartJsonData() async {
 
-  var url = 'http://localhost:3001/api/userValidation/getCartInfo';
+ 
+    String url ;
+  if (Platform.isAndroid)
+{
+  
+   url = 'http://10.0.2.2:3001/api/userValidation/getCartInfo';
+}
+else
+{
+   url = 'http://localhost:3001/api/userValidation/getCartInfo';
+
+}
 
   var response = await http.get(url);
 
